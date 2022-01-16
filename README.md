@@ -1,103 +1,23 @@
-# TSDX User Guide
+# Blockchain with Proof of Work (PoW)
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+The money in cryptocurrencies (such as Bitcoin) is “produced” as the incentive for people (miners) to solve the math problems required by a particular blockchain. Since every new block has to be approved by other miners, more miners means a more secure blockchain.
 
-> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
+If we want to make sure that only the blocks that have certain hashes can be added. For example, our blockchain may require each hash to start with 0000. The hash is calculated based on the content of the block, and it won’t start with four zeros unless someone finds an additional value to add to the block’s content to produce such a hash. Finding such a value is called block mining.
 
-> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
+Before a new block is added to the blockchain, it is given to all nodes on the network for processing, and these nodes will start calculating the special value that produces a valid hash. The first one to find this value wins. Wins what? A blockchain may offers rewards—in the Bitcoin blockchain, a successful data miner may earn Bitcoins.
 
-## Commands
+Let’s assume that our blockchain requires the hash of each block to start with 0000 (or any other number of zeros); otherwise the block will be rejected. We need to do some data mining to find a value that, if added to our block, will result in the generation of a hash that starts with 0000. We can write a program that will be adding sequential numbers (1, 2, 3, etc.) to the end of our input string until the generated hash starts with 0000. Once we know the number to include in the block’s content, so the generated hash will conform to the blockchain requirements. This number can be used just once with this particular input string. Changing any character in the input string will generate a hash that won’t start with 0000.
 
-TSDX scaffolds your new library inside `/src`.
+In cryptography, a number that can be used just once is called a nonce. We’ll add a property called nonce to the block object, and let the data miners calculate its value for each new block. A miner has to spend some computational resources to calculate the nonce, which is used as a Proof of Work (PoW), which is a must-have for any block to be considered for adding to a blockchain. 
 
-To run TSDX, use:
+## About the project
 
-```bash
-npm start # or yarn start
-```
+I create a blockchain with PoW and add blocks to it. To provide PoW it has some new propertyes, for example, nonce and a method to mine. The nonce will be concatenated to other properties of the block to produce a hash that starts with five zeros. 
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+The process of calculating a nonce that meets our requirements will take some time. This time, we want hashes that start with five zeros. The mine() method will invoke calculateHash() multiple times with different nonce values until the generated hash starts with 00000. 
 
-To do a one-off build, use `npm run build` or `yarn build`.
+This program run from the command line using node.js and the crypto module to generate SHA-256.
 
-To run tests, use `npm test` or `yarn test`.
+## Reference.
 
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle Analysis
-
-[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
-
-### Rollup
-
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### TypeScript
-
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
-```
-
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
-
-## Module Formats
-
-CJS, ESModules, and UMD module formats are supported.
-
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
+This project is based on "Typescript quickly" (Yakon Fain and Anton Moiseev).
